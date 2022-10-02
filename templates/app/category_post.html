@@ -1,26 +1,17 @@
 {% extends 'app\base.html' %}
 
 {% block content %}
-    {% for category in categories %}
-        <a href="{% url 'category-post' category.title %}">
-            <small class="text-muted ml-2">{{category}}</small>
-        </a>
-    {% endfor %}
-
-    {% for post in object_list %} <!-- 'object_list' for context name if not given-->
+    <h4>Home > {{view.kwargs.category_name}}</h4>
+    {% for post in posts %} <!-- 'object_list' for context name if not given-->
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{post.author.avatar.url}}">
           <div class="media-body">
             <div class="article-metadata">
               <a class="mr-2" href="{% url 'user-post' post.author.username %}">{{ post.author }}</a>
-              <small class="text-muted mr-5">{{ post.created_at|date:"l j, o" }}</small>
-              <small class="text-muted ml-2">category:</small>
-              {% for category in post.category.all %}
-                    <small class="text-muted ml-2">{{ category }}</small>
-              {% endfor %}
+              <small class="text-muted">{{ post.created_at|date:"l j, o" }}</small>
             </div>
             <h2><a class="article-title" href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content|truncatechars:160 }}</p>
+            <p class="article-content">{{ post.content }}</p>
           </div>
         </article>
     {% endfor %}

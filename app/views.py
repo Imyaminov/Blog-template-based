@@ -11,19 +11,18 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from .models import Post
+from .models import Post, Category
 
-class HomeListView(ListView):
-    model = Post
+class HomePostListView(ListView):
+    queryset = Post.objects.all()
     template_name = 'app/home.html'
-    context_object_name = 'posts'
+    ordering = ('-created_at',)
     paginate_by = 5
 
-    # given 3 ways of ordering
-    ordering = ('-created_at',)
-    # queryset = Post.objects.all().order_by('-created_at')
-    # def get_queryset(self):
-    #     return super().get_queryset().order_by('-created_at')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all().order_by('parent')
+        return context
 
 class UserPostListView(ListView):
     model = Post
@@ -34,13 +33,22 @@ class UserPostListView(ListView):
     def get_queryset(self):
         return super().get_queryset().filter(author__username=self.kwargs['username'])
 
+class CategoryPostListView(ListView):
+    model = Post
+    template_name = 'app/category_post.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return super().get_queryset().filter(category__title=self.kwargs['category_name'])
+
 class PostDetailView(DetailView):
     model = Post
     context_object_name = 'post'
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ('title', 'content',)
+    fields = ('title', 'content', 'category')
     template_name = 'app/post_form.html'
 
     def form_valid(self, form):
