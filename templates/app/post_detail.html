@@ -1,12 +1,12 @@
 {% extends 'app\base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
     <article class="media content-section">
       <img class="rounded-circle article-img" src="{{post.author.avatar.url}}">
       <div class="media-body">
         <div class="article-metadata">
           <a class="mr-2" href="{% url 'user-post' post.author.username %}">{{ post.author }}</a>
-          <small class="text-muted mr-5">{{ post.created_at|date:"l j, o" }}</small>
+          <small class="text-muted mr-5">{{ post.created_at|date:"F j, o" }}</small>
               {% for category in post.category.all %}
                 <small class="text-muted ml-1">{{ category }}</small>
               {% endfor %}
@@ -22,4 +22,24 @@
         {% endif %}
       </div>
     </article>
+
+    {% if user.is_authenticated %}
+    <div class="content-section">
+        <a href="{% url 'comment-create' post.id %}">Add Comment...</a>
+    </div>
+    {% endif %}
+
+    <h2>Comments - {{ comment_count }}</h2> <hr>
+    {% for comment in post_comment %}
+    <article class="media content-section">
+      <img class="rounded-circle article-img" src="{{comment.user.avatar.url}}">
+      <div class="media-body">
+        <a class="mr-2 " href="{% url 'user-post' comment.user.username %}">{{ comment.user }}</a>
+        <p class="article-content">{{ comment.content }}</p>
+        <small class="text-muted  mr-5">{{ comment.created_at|date:"F j, o" }}</small>
+      </div>
+    </article>
+    {% endfor %}
+
+
 {% endblock %}

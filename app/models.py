@@ -23,8 +23,27 @@ class Post(BaseModel):
     category = models.ManyToManyField(Category)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='post_author')
 
+    class Meta:
+        ordering = ('-created_at',)
+
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.pk})
+
+class Comment(BaseModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    content = models.TextField(verbose_name='Text comment')
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ('created_at',)
+
+    def __str__(self):
+        return self.user.username
+
+    # def get_absolute_url(self):
+    #     return reverse('post-detail', kwargs={'pk': self.pk})

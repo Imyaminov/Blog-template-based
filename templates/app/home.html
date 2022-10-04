@@ -1,6 +1,11 @@
 {% extends 'app\base.html' %}
 
 {% block content %}
+
+    {% if post %}
+        <h3>You searched for - {{post}}</h3>
+    {% endif %}
+
     {% for category in categories %}
         <a href="{% url 'category-post' category.title %}">
             <small class="text-muted ml-2">{{category}}</small>
