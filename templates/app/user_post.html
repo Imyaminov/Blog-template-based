@@ -1,52 +1,106 @@
 {% extends 'app\base.html' %}
 
 {% block content %}
-    {% for user in author %}
-    <div class="content-section">
-        <div class="media">
-            <img class="rounded-circle account-img" src="{{user.avatar.url}}">
-            <div class="media-body">
-              <h2 class="account-heading mb-1">{{user.username }}</h2>
-                {% if user.bio %}
-                    <h6 class="text-secondary mt-1">{{user.bio}}</h6>
+<main role="main" class="container">
+    <div class="row justify-content-lg-center">
+        <div class="col-sm-8">
+
+            {% for user in author %}
+            <div class="content-section">
+                <div class="media">
+                    <img class="rounded-circle account-img" src="{{user.avatar.url}}">
+                    <div class="media-body">
+                      <h2 class="account-heading mb-1">{{user.username }}</h2>
+                        {% if user.bio %}
+                            <h6 class="text-secondary mt-1">{{user.bio}}</h6>
+                        {% endif %}
+                      <p class="text-secondary">{{user.email}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <h2>Total Posts - {{page_obj.paginator.count}}</h2>
+            {% for post in posts %} <!-- 'object_list' for context name if not given-->
+                <article class="media content-section">
+                  <div class="media-body">
+                    <div class="article-metadata">
+                      <small class="text-muted">{{ post.created_at|date:"F j, o" }}</small>
+                    </div>
+                    <h3><a class="article-title" href="{% url 'post-detail' post.pk %}">{{ post.title|title }}</a></h3>
+                    <p class="article-content">{{ post.content|truncatechars:150|urlize}}</p>
+                  </div>
+                </article>
+            {% endfor %}
+            {% if is_paginated %}
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+                    <a class="btn btn-outline-info mb-4" href="?page={{page_obj.previous_page_number}}">Previous</a>
                 {% endif %}
-              <p class="text-secondary">{{user.email}}</p>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
 
-    <h2>Total Posts - {{page_obj.paginator.count}}</h2>
-    {% for post in posts %} <!-- 'object_list' for context name if not given-->
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <small class="text-muted">{{ post.created_at|date:"F j, o" }}</small>
-            </div>
-            <h2><a class="article-title" href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content|truncatechars:150|urlize}}</p>
-          </div>
-        </article>
-    {% endfor %}
-    {% if is_paginated %}
-        {% if page_obj.has_previous %}
-            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-            <a class="btn btn-outline-info mb-4" href="?page={{page_obj.previous_page_number}}">Previous</a>
-        {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
 
-        {% for num in page_obj.paginator.page_range %}
-            {% if num == page_obj.number %}
-                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% if page_obj.has_next %}
+                    <a class="btn btn-outline-info mb-4" href="?page={{page_obj.next_page_number}}">Next</a>
+                    <a class="btn btn-outline-info mb-4" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+                {% endif %}
             {% endif %}
-        {% endfor %}
+        </div>
 
-        {% if page_obj.has_next %}
-            <a class="btn btn-outline-info mb-4" href="?page={{page_obj.next_page_number}}">Next</a>
-            <a class="btn btn-outline-info mb-4" href="?page={{page_obj.paginator.num_pages}}">Last</a>
-        {% endif %}
-    {% endif %}
 
+        <div class="col-sm-4">
+              <div class="content-section">
+                <h3>My Blog</h3>
+                <p class='text-muted'>I have written {{posts.count}} posts so far
+                  <ul class="list-group">
+                    <li class="list-group-item list-group-item-light">
+                        <p>Latest Posts</p>
+                        {% for post in posts|slice:':2' %}
+                            <ul>
+                                <li><a href="{% url 'post-detail' post.pk %}">{{post}}</a></li>
+                            </ul>
+                        {% endfor %}
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                        <p>Most Commented Posts</p>
+                        {% for post in most_commented %}
+                            <ul>
+                                <li><a href="">{{post}}</a></li>
+                            </ul>
+                        {% endfor %}
+                    </li>
+                  </ul>
+                </p>
+                {% if comments %}
+                    <p class='text-muted'>Latest Comments
+                      <ul class="list-group">
+                          <li class="list-group-item list-group-item-light">
+                              {% for comment in comments %}
+                                <small class="mb-1">
+                                    <a href="{% url 'user-post' comment.user %}">{{comment.user}} </a>
+                                    - {{comment.created_at|timesince}} ago
+                                </small>
+                                <p class="article-title mb-0">{{comment.content}}</p>
+                                <small class="">
+                                    <a href="{% url 'post-detail' comment.post.pk %}">{{comment.post}}</a>
+                                </small>
+                                <hr class="mt-1 mb-1">
+                              {% endfor %}
+                          </li>
+                      </ul>
+                    </p>
+                {% endif %}
+              </div>
+        </div>
+
+
+    </div>
+</main>
 
 {% endblock %}

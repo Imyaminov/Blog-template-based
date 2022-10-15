@@ -52,8 +52,9 @@ class UserPostListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['author'] = User.objects.all().filter(username=self.kwargs['username'])
+        context['comments'] = Comment.objects.all().filter(post__author__username=self.kwargs['username'])
+        context['most_commented'] = self.get_queryset().order_by('-comments_count')
 
-        pprint(context)
         return context
 
 class CategoryPostListView(ListView):
@@ -72,12 +73,10 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
-
         # retrieving similar posts by tags
         post_tags_ids = context['post'].tag.values_list('id', flat=True)
         similar_posts = Post.objects.filter(tag__in=post_tags_ids).exclude(id=context['post'].id)
         context['similar_posts'] = similar_posts.annotate(same_tags=Count('tag')).order_by('-same_tags', '-created_at')[:4]
-
         # comments for particular post
         context['post_comment'] = Comment.objects.all().filter(post=context['post'])
         context['comment_count'] = Post.comment_count(context['post'])
