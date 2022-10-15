@@ -7,12 +7,26 @@
         <div class="article-metadata">
           <a class="mr-2" href="{% url 'user-post' post.author.username %}">{{ post.author }}</a>
           <small class="text-muted mr-5">{{ post.created_at|date:"F j, o" }}</small>
+          <small class="text-muted ml-2">category:</small>
               {% for category in post.category.all %}
-                <small class="text-muted ml-1">{{ category }}</small>
+                <small class="text-muted ml-2">{{ category }}</small>
               {% endfor %}
         </div>
-        <h2 class="article-title">{{ post.title }}</h2>
-        <p class="article-content">{{ post.content }}</p>
+        <h2 class="article-title">{{ post.title|title }}</h2>
+<!--        <h5 style="color:Gray;" class="btn btn-sm btn-outline-secondary mb-1">Tags: {{post.tag.all|join:', '}}</h5>-->
+        <p class="article-content">{{ post.content|urlize }}</p>
+        {%for post_tag in post.tag.all %}
+            <h5 class="btn btn-sm btn-outline-secondary">{{post_tag}}</h5>
+        {%endfor %}
+
+        {% if similar_posts %}
+            <h4 class="mt-2">Similar Posts</h4>
+            {%for similar_post in similar_posts %}
+                <a href="{{ similar_post.get_absolute_url }}">{{similar_post.title}}</a>
+            {% endfor %}
+        {% endif %}
+
+
         {% if post.author == user %}
           <div>
             <a class='btn btn-secondary btn-sm mt-1 mb-1' href="{%url 'post-update' post.id%}">Update</a>
@@ -29,14 +43,14 @@
     </div>
     {% endif %}
 
-    <h2>Comments - {{ comment_count }}</h2> <hr>
+    <h2>Comment List - {{ comment_count }}</h2> <hr>
     {% for comment in post_comment %}
     <article class="media content-section">
       <img class="rounded-circle article-img" src="{{comment.user.avatar.url}}">
       <div class="media-body">
         <a class="mr-2 " href="{% url 'user-post' comment.user.username %}">{{ comment.user }}</a>
         <p class="article-content">{{ comment.content }}</p>
-        <small class="text-muted  mr-5">{{ comment.created_at|date:"F j, o" }}</small>
+        <small class="text-muted  mr-5">{{ comment.created_at|date:"F j, o"}} at {{ comment.created_at|date:"P"}}</small>
       </div>
     </article>
     {% endfor %}

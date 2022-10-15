@@ -5,7 +5,7 @@ from .forms import RegisterForm, UserProfileUpdateForm
 # Create your views here.
 
 def register(request):
-
+    # print("IP Address for debug-toolbar: " + request.META['REMOTE_ADDR'])
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -21,6 +21,7 @@ def register(request):
 # only authenticated users can view their profile only
 @login_required
 def profile(request):
+
     if request.method == 'POST':
         # image exist within a form so request.FILES is also given
         # instance given because fields should be pre-filled and postdata saved on the instance

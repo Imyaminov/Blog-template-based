@@ -11,9 +11,12 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from django.views.generic.edit import FormMixin
+from django.db.models import Count
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from common.models import User
 from .models import Post, Category, Comment
-from .forms import CommentForm
+from pprint import pprint
 
 class HomePostListView(ListView):
     queryset = Post.objects.all()
@@ -23,7 +26,7 @@ class HomePostListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all().order_by('parent')
+        context['categories'] = Category.objects.all().annotate(posts_count=Count('post')).order_by('parent')
         return context
 
     def get_queryset(self):
@@ -33,6 +36,10 @@ class HomePostListView(ListView):
         else:
             return super().get_queryset()
 
+    # @method_decorator(cache_page(60*60*1))
+    # def get(self, *args, **kwargs):
+    #     return super().get(*args, **kwargs)
+
 class UserPostListView(ListView):
     model = Post
     template_name = 'app/user_post.html'
@@ -41,6 +48,13 @@ class UserPostListView(ListView):
 
     def get_queryset(self):
         return super().get_queryset().filter(author__username=self.kwargs['username'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['author'] = User.objects.all().filter(username=self.kwargs['username'])
+
+        pprint(context)
+        return context
 
 class CategoryPostListView(ListView):
     model = Post
@@ -58,13 +72,26 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
+
+        # retrieving similar posts by tags
+        post_tags_ids = context['post'].tag.values_list('id', flat=True)
+        similar_posts = Post.objects.filter(tag__in=post_tags_ids).exclude(id=context['post'].id)
+        context['similar_posts'] = similar_posts.annotate(same_tags=Count('tag')).order_by('-same_tags', '-created_at')[:4]
+
+        # comments for particular post
         context['post_comment'] = Comment.objects.all().filter(post=context['post'])
-        context['comment_count'] = Comment.objects.all().filter(post=context['post']).count()
+        context['comment_count'] = Post.comment_count(context['post'])
+        Post.save(context['post'])
+
         return context
+
+    # @method_decorator(cache_page(60 * 60 * 2))
+    # def get(self, *args, **kwargs):
+    #     return super().get(*args, **kwargs)
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ('title', 'content', 'category')
+    fields = ('title', 'content', 'category', 'tag')
     template_name = 'app/post_form.html'
 
     def form_valid(self, form):
@@ -73,7 +100,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ('title', 'content',)
+    fields = ('title', 'content', 'tag')
     template_name = 'app/post_form.html'
 
     def form_valid(self, form):

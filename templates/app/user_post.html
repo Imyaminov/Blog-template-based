@@ -1,17 +1,30 @@
 {% extends 'app\base.html' %}
 
 {% block content %}
-    <h2>Posts by - {{view.kwargs.username}} ({{page_obj.paginator.count}})</h2>
+    {% for user in author %}
+    <div class="content-section">
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{user.avatar.url}}">
+            <div class="media-body">
+              <h2 class="account-heading mb-1">{{user.username }}</h2>
+                {% if user.bio %}
+                    <h6 class="text-secondary mt-1">{{user.bio}}</h6>
+                {% endif %}
+              <p class="text-secondary">{{user.email}}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <h2>Total Posts - {{page_obj.paginator.count}}</h2>
     {% for post in posts %} <!-- 'object_list' for context name if not given-->
         <article class="media content-section">
-          <img class="rounded-circle article-img" src="{{post.author.avatar.url}}">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{% url 'user-post' post.author.username %}">{{ post.author }}</a>
               <small class="text-muted">{{ post.created_at|date:"F j, o" }}</small>
             </div>
             <h2><a class="article-title" href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
+            <p class="article-content">{{ post.content|truncatechars:150|urlize}}</p>
           </div>
         </article>
     {% endfor %}
