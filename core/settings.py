@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# site_id is set for - sitemaps
+SITE_ID=1
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 
     'common.apps.CommonConfig',
     'app.apps.AppConfig',

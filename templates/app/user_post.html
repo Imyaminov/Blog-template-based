@@ -14,7 +14,12 @@
                         {% if user.bio %}
                             <h6 class="text-secondary mt-1">{{user.bio}}</h6>
                         {% endif %}
-                      <p class="text-secondary">{{user.email}}</p>
+                      <p class="text-secondary">
+                          {{user.email}}
+                      </p>
+                      <p>
+                        <a href="{% url 'post-feed' %}">Subscribe to my RSS feed</a>
+                      </p>
                     </div>
                 </div>
             </div>
@@ -27,7 +32,7 @@
                     <div class="article-metadata">
                       <small class="text-muted">{{ post.created_at|date:"F j, o" }}</small>
                     </div>
-                    <h3><a class="article-title" href="{% url 'post-detail' post.pk %}">{{ post.title|title }}</a></h3>
+                    <h3><a class="article-title" href="{% url 'post-detail' post.pk post.slug %}">{{ post.title|title }}</a></h3>
                     <p class="article-content">{{ post.content|truncatechars:150|urlize}}</p>
                   </div>
                 </article>
@@ -63,7 +68,7 @@
                         <p>Latest Posts</p>
                         {% for post in posts|slice:':2' %}
                             <ul>
-                                <li><a href="{% url 'post-detail' post.pk %}">{{post}}</a></li>
+                                <li><a href="{% url 'post-detail' post.pk post.slug %}">{{post}}</a></li>
                             </ul>
                         {% endfor %}
                     </li>
@@ -88,7 +93,7 @@
                                 </small>
                                 <p class="article-title mb-0">{{comment.content}}</p>
                                 <small class="">
-                                    <a href="{% url 'post-detail' comment.post.pk %}">{{comment.post}}</a>
+                                    <a href="{% url 'post-detail' comment.post.pk comment.post.slug  %}">{{comment.post}}</a>
                                 </small>
                                 <hr class="mt-1 mb-1">
                               {% endfor %}

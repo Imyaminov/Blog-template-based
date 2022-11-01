@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from taggit.managers import TaggableManager
 
 from helpers.models import BaseModel
@@ -20,6 +21,7 @@ class Category(BaseModel):
 
 class Post(BaseModel):
     title = models.CharField(max_length=256)
+    slug = models.SlugField(blank=True, null=True)
     content = models.TextField()
 
     category = models.ManyToManyField(Category)
@@ -34,10 +36,12 @@ class Post(BaseModel):
 
     def save(self, *args, **kwargs):
         self.comments_count = Comment.objects.all().filter(post=self.id).count()
+        if not self.slug:
+            self.slug = slugify(self.title)
         super(Post, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('post-detail', kwargs={'pk': self.pk})
+        return reverse('post-detail', kwargs={'pk': self.pk, 'slug': self.slug})
 
     def __str__(self):
         return self.title

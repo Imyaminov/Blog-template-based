@@ -9,7 +9,7 @@
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-danger" type="submit">Confirm</button>
-                <a class="btn btn-outline-secondary" href="{% url 'post-detail' post.id %}">Cancel</a>
+                <a class="btn btn-outline-secondary" href="{% url 'post-detail' post.id post.slug %}">Cancel</a>
             </div>
         </form>
     </div>

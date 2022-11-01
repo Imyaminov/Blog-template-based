@@ -29,7 +29,7 @@
                     <small class="text-muted ml-2">{{ category }}</small>
               {% endfor %}
             </div>
-            <h2><a class="article-title" href="{% url 'post-detail' post.pk %}">{{ post.title|title }}</a></h2>
+            <h2><a class="article-title" href="{% url 'post-detail' post.pk post.slug %}">{{ post.title|title }}</a></h2>
             <p class="article-content">{{ post.content|truncatechars:160|urlize }}</p>
           </div>
         </article>
