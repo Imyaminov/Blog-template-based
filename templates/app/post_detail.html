@@ -39,7 +39,7 @@
 
     {% if user.is_authenticated %}
     <div class="content-section">
-        <a href="{% url 'comment-create' post.id %}">Add Comment...</a>
+        <a href="{% url 'comment-create' post.id post.slug %}">Add Comment...</a>
     </div>
     {% endif %}
 

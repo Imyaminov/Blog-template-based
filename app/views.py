@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin,
@@ -14,13 +14,14 @@ from django.views.generic import (
 from django.db.models import Count
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from django.contrib.postgres.search import SearchVector, SearchQuery
 from common.models import User
 from .models import Post, Category, Comment
-from pprint import pprint
 
 class HomePostListView(ListView):
-    queryset = Post.objects.all()
+    model = Post
     template_name = 'app/home.html'
+    context_object_name = 'posts'
     ordering = ('-created_at',)
     paginate_by = 5
 
@@ -30,11 +31,12 @@ class HomePostListView(ListView):
         return context
 
     def get_queryset(self):
-        query = self.request.GET.get('post')
-        if query:
-            return super().get_queryset().filter(title__icontains=query)
-        else:
-            return super().get_queryset()
+        q = self.request.GET.get('post')
+        if q:
+            vector = SearchVector('title')
+            query = SearchQuery(q)
+            return super().get_queryset().annotate(search=vector).filter(search=query)
+        return super().get_queryset()
 
     # @method_decorator(cache_page(60*60*1))
     # def get(self, *args, **kwargs):
@@ -53,8 +55,8 @@ class UserPostListView(ListView):
         context = super().get_context_data(**kwargs)
         context['author'] = User.objects.all().filter(username=self.kwargs['username'])
         context['comments'] = Comment.objects.all().filter(post__author__username=self.kwargs['username'])
-        context['most_commented'] = self.get_queryset().order_by('-comments_count')
-
+        context['most_commented'] = self.get_queryset().order_by('-comments_count')[:6]
+        context['user_post_count'] = Post.user_post_count(self.kwargs["username"])
         return context
 
 class CategoryPostListView(ListView):
@@ -64,7 +66,7 @@ class CategoryPostListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return super().get_queryset().filter(category__title=self.kwargs['category_name'])
+        return super().get_queryset().filter(category__slug=self.kwargs['category_name'])
 
 class PostDetailView(DetailView):
     model = Post
@@ -137,7 +139,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('post-detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse('post-detail', kwargs={'pk': self.kwargs['pk'], 'slug': self.kwargs['slug']})
 
 def about(request):
     return render(request, 'app/about.html', {'title': 'Post_1'})

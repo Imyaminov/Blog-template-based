@@ -1,7 +1,7 @@
 {% extends 'app\base.html' %}
-
+{% load  template_filters %}
 {% block content %}
-    <h4>Home > {{view.kwargs.category_name}}</h4>
+    <h4>Home > {{view.kwargs.category_name|replace_dash:'-'|title}}</h4>
     {% for post in posts %} <!-- 'object_list' for context name if not given-->
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{post.author.avatar.url}}">
@@ -10,7 +10,7 @@
               <a class="mr-2" href="{% url 'user-post' post.author.username %}">{{ post.author }}</a>
               <small class="text-muted">{{ post.created_at|date:"F j, o" }}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h2>
+            <h2><a class="article-title" href="{% url 'post-detail' post.pk post.slug %}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content|truncatechars:160 }}</p>
           </div>
         </article>

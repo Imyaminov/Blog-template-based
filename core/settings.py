@@ -23,12 +23,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-5xdc2m*x_b3bjtw$3(z(bc9p$_#*pd)j=15#zxg!1hk@&i7uy+'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 # site_id is set for - sitemaps
@@ -51,6 +45,7 @@ INSTALLED_APPS = [
     'taggit',
     'django_extensions',
 
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -89,12 +84,12 @@ AUTH_USER_MODEL = 'common.User'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -147,8 +142,6 @@ LOGIN_REDIRECT_URL = 'blog-home'
 
 LOGIN_URL = 'login'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 # DEBUG TOOLBAR
 
 DEBUG_TOOLBAR_CONFIG = {
@@ -159,22 +152,9 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-# Redis Cache
-HOST = "http://localhost:8000"
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-        "KEY_PREFIX": "blog"
-    }
-}
-
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-
-import mimetypes
-
-mimetypes.add_type("application/javascript", ".js", True)
+try:
+    from .local_settings import *  # noqa
+except ImportError:
+    print('Error occured(local_settings)!!!')
+    pass  # noqa

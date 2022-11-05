@@ -5,7 +5,11 @@ from .models import Comment, Post, Category
 from taggit.models import Tag
 
 admin.site.unregister(Group)
-admin.site.register(Category)
+# admin.site.register(Category)
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('title', 'id')
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
