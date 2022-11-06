@@ -4,7 +4,7 @@
 
         {% if request.GET.post %}
             <h4>You searched for - '{{request.GET.post}}'</h4>
-            <h6>Results - {{posts|length}}</h6>
+            <h6>Results - {{page_obj.paginator.count}}</h6>
         {% else %}
             {% if categories %}
                 <hr>
@@ -34,26 +34,39 @@
             </div>
             <h2><a class="article-title" href="{% url 'post-detail' post.pk post.slug %}">{{ post.title|title }}</a></h2>
             <p class="article-content">{{ post.content|truncatechars:160|urlize }}</p>
+              <p>{{post.rank}}</p>
           </div>
         </article>
     {% endfor %}
-    {% if is_paginated %}
-        {% if page_obj.has_previous %}
-            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-            <a class="btn btn-outline-info mb-4" href="?page={{page_obj.previous_page_number}}">Previous</a>
-        {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-            {% if num == page_obj.number %}
-                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+    {% if request.GET.post %}
+        {% if is_paginated %}
+            {% if page_obj.has_previous and not request.GET.post %}
+                <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{page_obj.previous_page_number}}">Previous</a>
+            {% elif page_obj.has_previous %}
+                <a class="btn btn-outline-info mb-4" href="?post={{request.GET.post}}&page=1">First</a>
+                <a class="btn btn-outline-info mb-4" href="?post={{request.GET.post}}&page={{page_obj.previous_page_number}}">Previous</a>
             {% endif %}
-        {% endfor %}
 
-        {% if page_obj.has_next %}
-            <a class="btn btn-outline-info mb-4" href="?page={{page_obj.next_page_number}}">Next</a>
-            <a class="btn btn-outline-info mb-4" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number and not request.GET.post%}
+                    <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% elif num == page_obj.number %}
+                    <a class="btn btn-info mb-4" href="?post={{request.GET.post}}&page={{ num }}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' and not request.GET.post%}
+                    <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="btn btn-outline-info mb-4" href="?post={{request.GET.post}}&page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next and not request.GET.post %}
+                <a class="btn btn-outline-info mb-4" href="?page={{page_obj.next_page_number}}">Next</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+            {% elif page_obj.has_next %}
+                <a class="btn btn-outline-info mb-4" href="?post={{request.GET.post}}&page={{page_obj.next_page_number}}">Next</a>
+                <a class="btn btn-outline-info mb-4" href="?post={{request.GET.post}}&page={{page_obj.paginator.num_pages}}">Last</a>
+            {% endif %}
         {% endif %}
     {% endif %}
 

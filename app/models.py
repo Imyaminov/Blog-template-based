@@ -28,7 +28,7 @@ class Category(BaseModel):
         return self.title
 
 class Post(BaseModel):
-    title = models.CharField(max_length=256)
+    title = models.CharField(max_length=1024)
     slug = models.SlugField(blank=True, null=True)
     content = models.TextField()
 

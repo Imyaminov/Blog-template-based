@@ -16,7 +16,7 @@
 <!--        <h5 style="color:Gray;" class="btn btn-sm btn-outline-secondary mb-1">Tags: {{post.tag.all|join:', '}}</h5>-->
         <p class="article-content">{{ post.content|urlize }}</p>
         {%for post_tag in post.tag.all %}
-            <h5 class="btn btn-sm btn-outline-secondary">{{post_tag}}</h5>
+            <h5 class="btn btn-sm btn-outline-secondary">#{{post_tag|lower}}</h5>
         {%endfor %}
 
         {% if similar_posts %}

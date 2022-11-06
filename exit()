@@ -1,0 +1,35 @@
+[33mcommit b36da3fe413cdfcac740b6e4a48377903fce25eb[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: Imyaminov <250503iaa@gmail.com>
+Date:   Tue Nov 1 14:40:29 2022 +0300
+
+    added sitemap, and rss feed
+
+[33mcommit 04b28f9ac7974b2d40bdf9c0da151b892d088d4b[m
+Author: Imyaminov <250503iaa@gmail.com>
+Date:   Sun Oct 16 01:00:32 2022 +0300
+
+    add: latest posts, most commented post, latest comments in user blog
+
+[33mcommit 20b87a3ed5ac86e92476194c294312d7f7ec435c[m
+Author: Imyaminov <250503iaa@gmail.com>
+Date:   Sat Oct 15 22:23:48 2022 +0300
+
+    added tagging functionality, retrieving similar posts, updated user profile
+
+[33mcommit 1be32ae4ba37fe4129200746d89a00d7226dc4c9[m
+Author: Imyaminov <250503iaa@gmail.com>
+Date:   Tue Oct 4 19:40:32 2022 +0300
+
+    add: search by blog title
+
+[33mcommit aaad5826642d8c5885bd468bae73d167e34c505a[m
+Author: Imyaminov <250503iaa@gmail.com>
+Date:   Sun Oct 2 17:25:43 2022 +0300
+
+    added category field, fitler by category
+
+[33mcommit 9b90b2edfd8a4972ca896c20af0acbe767ef7c53[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Imyaminov <250503iaa@gmail.com>
+Date:   Tue Sep 27 19:17:41 2022 +0300
+
+    initial commit
