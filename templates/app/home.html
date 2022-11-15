@@ -33,8 +33,12 @@
               {% endfor %}
             </div>
             <h2><a class="article-title" href="{% url 'post-detail' post.pk post.slug %}">{{ post.title|title }}</a></h2>
-            <p class="article-content">{{ post.content|truncatechars:160|urlize }}</p>
-              <p>{{post.rank}}</p>
+            {% if request.GET.post %}
+                <p class="article-content">{{ post.search_headline|safe }}</p>
+            {% else %}
+                <p class="article-content">{{ post.content|truncatechars:160|urlize }}</p>
+            {% endif %}
+<!--              <p>{{post.rank}}</p>-->
           </div>
         </article>
     {% endfor %}

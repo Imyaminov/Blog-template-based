@@ -14,7 +14,7 @@ from django.views.generic import (
 from django.db.models import Count
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, SearchHeadline
 from common.models import User
 from .models import Post, Category, Comment
 
@@ -32,14 +32,14 @@ class HomePostListView(ListView):
 
     def get_queryset(self):
         q = self.request.GET.get('post')
-
         if q:
-            vector = SearchVector('title')
+            vector = SearchVector('title', weight='A') + SearchVector('content', weight='B')
             query = SearchQuery(q)
             rank = SearchRank(vector, query)
-            return super().get_queryset().annotate(rank=rank).filter(rank__gte=0.001).order_by('-rank')
+            headline = SearchHeadline('content', query)
+            return super().get_queryset().annotate(rank=rank)\
+                .annotate(search_headline=headline).filter(rank__gte=0.3).order_by('-rank')
             # return super().get_queryset().annotate(search=vector).filter(search=query)
-
         return super().get_queryset()
 
     # @method_decorator(cache_page(60*60*1))

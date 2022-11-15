@@ -23,6 +23,7 @@
             <h4 class="mt-2">Similar Posts</h4>
             {%for similar_post in similar_posts %}
                 <a href="{{ similar_post.get_absolute_url }}">{{similar_post.title}}</a>
+                <br>
             {% endfor %}
         {% endif %}
 
