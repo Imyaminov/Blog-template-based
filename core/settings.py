@@ -159,8 +159,8 @@ INTERNAL_IPS = [
 ]
 
 
-# try:
-#     from .local_settings import *  # noqa
-# except ImportError:
-#     print('Error occured(local_settings)!!!')
-#     pass  # noqa
+try:
+    from .local_settings import *  # noqa
+except ImportError:
+    print('Error occured(local_settings)!!!')
+    pass  # noqa
