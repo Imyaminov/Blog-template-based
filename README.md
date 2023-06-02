@@ -1,6 +1,6 @@
 # Blog Application
 
-This is my template based Blog website built with monolithic approach using Django and Javascript.
+This is my template based Blog website built with monolithic approach using Django, HTML/CSS and Bootstrap.
 
 ## Description
 
@@ -48,11 +48,11 @@ Any advise for common problems or issues contact [me](250503iaa@gmail.com).
 
 ## Authors
 
-Contributors names and contact info
+ Authors name and contact info
   
 ex. [Abduboriy](https://www.linkedin.com/in/abduboriy-imyaminov/)
 
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Imyaminov/blog-app-template-based/blob/main/LICENSE.md) file for details
