@@ -16,48 +16,43 @@ is used to reach good performance.
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
-
+* clone the repo 
+  ```sh
+  git clone https://github.com/Imyaminov/blog-app-template-based.git
+  ```
+  
 ### Executing program
+* configure the database. By default django uses sqlite3 but this project requires [PostgreSQL](https://www.postgresql.org/download/) database because of search engine. you can open local_settings.py file or directly configure in [settings.py](https://github.com/Imyaminov/blog-app-template-based/blob/main/core/settings.py) 
+* install requirements:
+```
+ pip install -r requirements.txt
+```
+* makemigrations to create migration files:
+```
+ python manage.py makemigrations
+```
+* then migrate to apply those migrations:
+```
+python manage.py migrate
+```
+* finally run the server:
+```
+python manage.py runserver
+```
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
+** ! run "python manage.py createsuperuser" to create superuser to access the admin page
 
 ## Help
 
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+Any advise for common problems or issues contact [me](250503iaa@gmail.com).
 
 ## Authors
 
 Contributors names and contact info
+  
+ex. [Abduboriy](https://www.linkedin.com/in/abduboriy-imyaminov/)
 
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
 
 ## License
 
 This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
-
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
