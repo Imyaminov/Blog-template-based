@@ -4,9 +4,24 @@ This is my template based Blog website built with monolithic approach using Djan
 
 ## Description
 
-This Django project contains Custom authorization, login/logout, password set/reset, recommendation and tagging system. Moreover users can also comment out to posts.
-For search system, PostgreSQL full text search is implemented with search headline and ranking capabilities. Also Redis is used to cache some pages and different query optimization techniques
+This Django project contains: 
+ - custom authorization
+ - login/logout  
+ - password set/reset, 
+ - recommendation system 
+ - tagging system 
+ - commenting out and more.
+ 
+For search system, PostgreSQL Fulltext Search is implemented with search headline and ranking capabilities. 
+Also Redis is used to cache some pages and different query optimization techniques
 is used to reach good performance.
+
+## Technologies
+ - Django 
+ - PostgreSQL
+ - Redis Cache
+ - PostgreSQL full text search (+ranking, headlines, similarities)
+ - HTML, CSS, BootStrap
 
 ## Getting Started
 
